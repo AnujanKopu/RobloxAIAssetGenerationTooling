@@ -1,0 +1,74 @@
+# Roblox Low-Poly Asset Pipeline — Cursor Rules
+
+This project is a standalone AI-driven pipeline for generating low-poly Roblox assets.
+It ships as a self-contained `pipeline/` directory that can be dropped into any Roblox project.
+
+## Architecture
+
+- **CIR Format**: Assets are defined as compact JSON — see `.github/instructions/cir-format.instructions.md`
+- **MCP Server**: `pipeline/mcp-server/` — Rust binary with 9 tools: validate, convert, save, search, assemble
+- **Agents**: Three AI agents in `.github/agents/` — orchestrator, planner, generator
+- **Config**: `pipeline/config/scale.json` + `pipeline/config/palette.json`
+- **Asset Library**: `pipeline/assets/library/` — reusable CIR assets, searchable by name/tags
+
+## Key Paths
+
+| Path | Purpose |
+|------|---------|
+| `pipeline/mcp-server/src/` | Rust MCP server source |
+| `pipeline/config/scale.json` | Canonical dimensions (humanoid=5 studs, door=4×7, fence=3.5) |
+| `pipeline/config/palette.json` | Named color palettes |
+| `pipeline/assets/library/` | Reusable CIR asset library (committed) |
+| `pipeline/assets/generated/` | Output .model.json files (gitignored) |
+| `.github/agents/` | AI agent instruction files |
+| `.vscode/mcp.json` | MCP server config for VS Code Copilot |
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `convert_and_save` | **Primary tool** — validate + convert CIR → .model.json + save to library in 1 call |
+| `validate_geometry` | Validate CIR geometry (rotation-aware AABB, overlap detection) |
+| `convert_to_model` | Convert CIR to .model.json without saving to library |
+| `save_asset` | Save an asset to the library manually |
+| `search_assets` | Fuzzy search the asset library by name/tags |
+| `assemble_scene` | Merge multiple assets into a scene .model.json |
+| `read_scene_context` | Spatial summary of current generated scene |
+| `get_scale_config` | Read canonical dimensions |
+| `get_palette` | Read a named color palette |
+
+## Conventions
+
+- Always use CIR format for assets — never write raw `.model.json`
+- The `convert_and_save` tool does everything in one call — prefer it over separate calls
+- Always check the asset library before generating (`search_assets`) — reuse when possible
+- Part budget: 3–8 simple, 8–15 medium, 15–25 complex, max 30
+- Colors: always from `get_palette`, never hardcode RGB values
+- Position Y: center of part — a part on the ground with height H gets Y = H/2
+- Overlap ≥ 1 stud on all axes = error (blocks conversion); < 1 stud = warning only
+
+## CIR Format Quick Reference
+
+```json
+{
+  "name": "asset_name",
+  "parts": [
+    { "n": "PartName", "p": [x, y, z], "s": [sx, sy, sz], "c": [r, g, b] }
+  ]
+}
+```
+
+- `p` = center position (not corner)
+- `s` = size
+- `c` = color as RGB floats 0.0–1.0
+- Optional: `"t"` (type: block/wedge/cylinder/ball), `"r"` (rotation degrees), `"m"` (material)
+
+## Agent Workflow
+
+```
+@roblox-orchestrator <prompt>
+    → roblox-planner   (layout: which assets, where, what palette)
+    → roblox-generator (per asset: CIR → convert_and_save)
+```
+
+To generate a single asset: `@roblox-generator create a pine tree`

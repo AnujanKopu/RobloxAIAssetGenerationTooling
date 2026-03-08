@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "asset_pipeline": {
+      "command": "./pipeline/mcp-server/target/debug/roblox-asset-pipeline",
+      "args": ["./pipeline"]
+    }
+  }
+}

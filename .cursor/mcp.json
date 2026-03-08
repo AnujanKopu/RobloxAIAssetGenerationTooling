@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "asset_pipeline": {
+      "command": "${workspaceFolder}\\pipeline\\mcp-server\\target\\debug\\roblox-asset-pipeline.exe",
+      "args": ["${workspaceFolder}\\pipeline"]
+    }
+  }
+}

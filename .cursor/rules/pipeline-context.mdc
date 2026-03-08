@@ -1,0 +1,41 @@
+---
+description: "Roblox low-poly asset pipeline context"
+alwaysApply: true
+---
+
+# Roblox Low-Poly Asset Pipeline
+
+This project is a standalone AI-driven pipeline for generating low-poly Roblox assets.
+The `pipeline/` directory is self-contained and can be dropped into any Roblox project.
+
+## Architecture
+
+- **CIR Format**: Assets are defined as compact JSON — see `.github/instructions/cir-format.instructions.md`
+- **MCP Server**: `pipeline/mcp-server/` — Rust binary with 9 tools: validate, convert, save, search, assemble
+- **Config**: `pipeline/config/scale.json` + `pipeline/config/palette.json`
+- **Asset Library**: `pipeline/assets/library/` — reusable CIR assets, searchable by name/tags
+- **Output**: `.model.json` files written to `pipeline/assets/generated/`, auto-synced to Studio via `rojo serve`
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `convert_and_save` | **Primary tool** — validate + convert CIR → .model.json + save to library in 1 call |
+| `validate_geometry` | Validate CIR geometry (rotation-aware AABB, overlap detection) |
+| `convert_to_model` | Convert CIR to .model.json without saving to library |
+| `save_asset` | Save an asset to the library manually |
+| `search_assets` | Fuzzy search the asset library by name/tags |
+| `assemble_scene` | Merge multiple assets into a scene .model.json |
+| `read_scene_context` | Spatial summary of current generated scene |
+| `get_scale_config` | Read canonical dimensions |
+| `get_palette` | Read a named color palette |
+
+## Conventions
+
+- Always use CIR format for assets — never write raw `.model.json`
+- The `convert_and_save` tool does everything in one call — prefer it over separate calls
+- Always check the asset library before generating (`search_assets`) — reuse when possible
+- Part budget: 3–8 simple, 8–15 medium, 15–25 complex, max 30
+- Colors: always from `get_palette`, never hardcode RGB values
+- Position Y: center of part — a part on the ground with height H gets Y = H/2
+- Overlap ≥ 1 stud on all axes = error (blocks conversion); < 1 stud = warning only

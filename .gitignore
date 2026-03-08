@@ -1,0 +1,40 @@
+# ── Roblox / Rojo ──────────────────────────────────────────
+# Built place files
+*.rbxlx
+*.rbxl
+*.rbxlx.lock
+*.rbxl.lock
+
+# Rojo generated files
+sourcemap.json
+
+# Rojo game project files — these live in each individual game project,
+# not in this universal pipeline repo.
+default.project.json
+/src/
+
+# ── Rust build artifacts ────────────────────────────────────
+pipeline/mcp-server/target/
+
+
+# ── Assets (runtime data, not source) ───────────────────────
+# Both library/ and generated/ are populated at runtime by the pipeline.
+# Neither is committed — rebuild with the pipeline after cloning.
+pipeline/assets/
+
+# Keep directory skeletons so Rojo and the pipeline have somewhere to write
+!pipeline/assets/generated/.gitkeep
+!pipeline/assets/generated/scenes/.gitkeep
+
+# ── Editor / OS ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# ── Editor settings ─────────────────────────────────────────
+# Keep MCP configs and agent rules, ignore personal settings
+.vscode/settings.json
+.vscode/launch.json
+.cursor/settings.json
