@@ -1,8 +1,8 @@
 ﻿<div align="center">
 
-# roblox-asset-pipeline
+# prototype-roblox-asset-pipeline
 
-**AI-powered low-poly 3D asset generation for Roblox Studio**
+**Tooling experiments for AI-powered low-poly 3D asset generation for Roblox Studio**
 
 Describe what you want. Get optimized 3D assets synced directly into your game.
 
@@ -10,7 +10,7 @@ Describe what you want. Get optimized 3D assets synced directly into your game.
 
 ---
 
-Generate low-poly Roblox assets by chatting with an AI agent. Type a prompt, and the pipeline validates, converts, and drops production-ready `.model.json` files straight into Studio via Rojo.
+This repository explores workflows for automatically generating low-poly Roblox assets by chatting with an AI agent. Type a prompt, and the pipeline validates, converts, and drops production-ready .model.json files straight into Studio via Rojo.
 
 Works with **GitHub Copilot**, **Cursor**, and **Claude Code** out of the box.
 
